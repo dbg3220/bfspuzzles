@@ -75,6 +75,5 @@ public class ClockConfig implements Configuration {
      * Implemented so that a ClockConfig can be displayed when a solution is found
      * @return The data for this config
      */
-    @Override
     public String getData() { return "" + hour; }
 }

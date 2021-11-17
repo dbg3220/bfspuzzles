@@ -16,6 +16,6 @@ public interface Configuration {
     boolean equals(Object other);
     /** To make all configurations uniquely hashable */
     int hashCode();
-    /** To make all configs be easily representable */
-    String getData();
+    /** So that a Configuration is easily representable in the step printout */
+    String toString();
 }
