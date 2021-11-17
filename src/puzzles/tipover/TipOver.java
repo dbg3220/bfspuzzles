@@ -6,7 +6,7 @@ import java.io.*;
 
 /**
  * DESCRIPTION
- * @author YOUR NAME HERE
+ * @author Damon Gonzalez
  * November 2021
  */
 public class TipOver {
