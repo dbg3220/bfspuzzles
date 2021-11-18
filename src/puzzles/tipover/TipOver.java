@@ -4,7 +4,6 @@ import puzzles.tipover.model.TipOverConfig;
 import solver.Configuration;
 import solver.Solver;
 
-import java.io.*;
 import java.util.List;
 
 /**
@@ -35,7 +34,7 @@ public class TipOver {
         if(path.size() == 0)
             System.out.println("No Solution");
         for(int i = 0; i < path.size(); i++){
-            System.out.println("Step " + (i + 1) + ":");
+            System.out.println("Step " + i + ":");
             System.out.println(path.get(i));
         }
     }

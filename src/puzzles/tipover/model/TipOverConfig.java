@@ -4,9 +4,7 @@ import solver.Configuration;
 import util.Coordinates;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Public Configuration class for the TipOver puzzle that holds all the state necessary for representing
