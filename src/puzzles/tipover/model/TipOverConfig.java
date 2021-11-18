@@ -174,8 +174,7 @@ public class TipOverConfig implements Configuration{
         for(int i = 0; i < cols; i++)
             message.append("  ").append(i);
         message.append("\n   ");
-        for(int i = 0; i < cols; i++)
-            message.append("___");
+        message.append("___".repeat(Math.max(0, cols)));
         message.append("\n");
         int start = 0;
         for(int i = 0; i < rows; i++){
