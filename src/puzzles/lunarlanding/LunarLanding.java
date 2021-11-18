@@ -1,11 +1,21 @@
 package puzzles.lunarlanding;
 
+import puzzles.lunarlanding.model.LunarLandingConfig;
+import solver.Configuration;
+
 /**
  * DESCRIPTION
- * @author YOUR NAME HERE
+ * @author George Banacos
  * November 2021
  */
 public class LunarLanding {
+
+    private Configuration lunarLandingConfiguration;
+
+    public LunarLanding(String fileName){
+
+        lunarLandingConfiguration = new LunarLandingConfig(fileName);
+    }
 
     /*
      * code to read the file name from the command line and
@@ -13,6 +23,12 @@ public class LunarLanding {
      */
 
     public static void main( String[] args ) {
-        System.err.println( "REPLACE THIS METHOD!" );
+        if (args.length == 1){
+            String fileName = args[0];
+            LunarLanding l = new LunarLanding(fileName);
+        }
+        else{
+            System.out.println("Input file name");
+        }
     }
 }
