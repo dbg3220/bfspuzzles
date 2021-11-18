@@ -111,7 +111,8 @@ public class WaterConfig implements Configuration {
      * Implemented so that a ClockConfig can be displayed when a solution is found
      * @return The data for this config
      */
-    public String getData() {
+    @Override
+    public String toString() {
         return Arrays.toString(theseAmounts);
     }
 }

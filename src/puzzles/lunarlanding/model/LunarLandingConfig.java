@@ -22,7 +22,7 @@ public class LunarLandingConfig implements Configuration {
     }
 
     @Override
-    public String getData() {
+    public String toString() {
         return null;
     }
 }
