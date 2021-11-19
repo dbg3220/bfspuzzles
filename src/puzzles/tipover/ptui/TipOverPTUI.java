@@ -1,13 +1,35 @@
 package puzzles.tipover.ptui;
 
+import puzzles.tipover.model.*;
+
+import util.Observer;
+import util.ptui.ConsoleApplication;
+
+import java.io.PrintWriter;
+
 /**
  * DESCRIPTION
- * @author YOUR NAME HERE
+ * @author Damon Gonzalez
  * November 2021
  */
-public class TipOverPTUI {
+public class TipOverPTUI extends ConsoleApplication implements Observer<TipOverModel, String> {
 
-    public static void main( String[] args ) {
-        System.err.println( "REPLACE THIS METHOD!" );
+    public TipOverPTUI(){
+
+    }
+
+    @Override
+    public void update(TipOverModel tipOverModel, String s) {
+
+    }
+
+    @Override
+    public void start(PrintWriter console) throws Exception {
+
+    }
+
+    public static void main(String[] args) {
+        TipOverPTUI puzzle = new TipOverPTUI();
+        //ConsoleApplication.launch(args);
     }
 }
