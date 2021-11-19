@@ -21,22 +21,22 @@ public class Solver {
         Map<Configuration, Configuration> predecessorMap = new HashMap<>();
         queue.add(startConfig);
         predecessorMap.put(startConfig, null);
-        int totalConfigs = 0;
+        int totalConfigs = 1;
         int uniqueConfigs;
         Configuration solution = null;
         while(queue.size() != 0){
             Configuration currentConfig = queue.remove(0);
             List<Configuration> neighbors = currentConfig.getNeighbors();
+            if(currentConfig.isSolution()) {
+                solution = currentConfig;
+                queue.clear();
+                break;
+            }
             totalConfigs += neighbors.size();
             for (Configuration neighbor : neighbors){
                 if(!predecessorMap.containsKey(neighbor)){
                     queue.add(neighbor);
                     predecessorMap.put(neighbor, currentConfig);
-                    if(neighbor.isSolution()) {
-                        solution = neighbor;
-                        queue.clear();
-                        break;
-                    }
                 }
             }
         }
