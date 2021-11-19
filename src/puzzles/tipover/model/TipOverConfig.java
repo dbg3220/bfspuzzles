@@ -8,7 +8,7 @@ import java.util.*;
 
 /**
  * Public Configuration class for the TipOver puzzle that holds all the state necessary for representing
- *  a configuration, and holds all the methods necesary for a Breadth First Search Algorithm.
+ *  a configuration, and holds all the methods necessary for a Breadth First Search Algorithm.
  * @author Damon Gonzalez
  * November 2021
  */
@@ -288,11 +288,5 @@ public class TipOverConfig implements Configuration{
                 }
             }
         }
-    }
-
-
-    /* Temporary Tester Function for this class's methods */
-    public void test(){
-
     }
 }
