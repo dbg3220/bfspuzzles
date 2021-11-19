@@ -15,9 +15,9 @@ import java.util.*;
 public class TipOverConfig implements Configuration{
     /** The grid of squares that holds the value of the configuration */
     private char[] grid;
-    /** The amount of rows */
+    /** The amount of rows, does not change */
     private static int rows;
-    /** The amount of columns in each row */
+    /** The amount of columns in each row, does not change */
     private static int cols;
     /** The location of the goal crate, does not change */
     private static Coordinates goal;
@@ -29,25 +29,22 @@ public class TipOverConfig implements Configuration{
      *  an initial configuration of a puzzle, given a filename
      * @param filename The name of the file that holds the puzzle
      */
-    public TipOverConfig(String filename) {
-        try (BufferedReader in = new BufferedReader(new FileReader(filename))) {
-            String line = in.readLine();//ANALYZE FIRST LINE VALUES
-            String[] values = line.split("\\s++");
-            rows = Integer.parseInt(values[0]);
-            cols = Integer.parseInt(values[1]);
-            grid = new char[rows * cols];
-            tipperLocation = new Coordinates(Integer.parseInt(values[2]), Integer.parseInt(values[3]));
-            goal = new Coordinates(Integer.parseInt(values[4]), Integer.parseInt(values[5]));
-            int index = 0;
-            while(!(line = in.readLine()).equals("")){//ANALYZE THE GRID
-                String[] row = line.split("\\s++");
-                for(String square : row) {
-                    grid[index] = square.charAt(0);
-                    index++;
-                }
+    public TipOverConfig(String filename) throws IOException{
+        BufferedReader in = new BufferedReader(new FileReader(filename));
+        String line = in.readLine();
+        String[] values = line.split("\\s++");
+        rows = Integer.parseInt(values[0]);
+        cols = Integer.parseInt(values[1]);
+        grid = new char[rows * cols];
+        tipperLocation = new Coordinates(Integer.parseInt(values[2]), Integer.parseInt(values[3]));
+        goal = new Coordinates(Integer.parseInt(values[4]), Integer.parseInt(values[5]));
+        int index = 0;
+        while(!(line = in.readLine()).equals("")){
+            String[] row = line.split("\\s++");
+            for(String square : row) {
+                grid[index] = square.charAt(0);
+                index++;
             }
-        } catch (IOException e) {
-            e.getStackTrace();
         }
     }
 

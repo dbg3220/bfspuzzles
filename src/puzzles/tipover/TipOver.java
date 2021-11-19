@@ -4,6 +4,8 @@ import puzzles.tipover.model.TipOverConfig;
 import solver.Configuration;
 import solver.Solver;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -20,7 +22,7 @@ public class TipOver {
      *  given a filename
      * @param filename The name of the puzzle file
      */
-    public TipOver(String filename) {
+    public TipOver(String filename) throws IOException {
         initialConfig = new TipOverConfig(filename);
     }
 
@@ -41,8 +43,12 @@ public class TipOver {
 
     public static void main(String[] args) {
         if(args.length == 1){
-            TipOver puzzle = new TipOver(args[0]);
-            puzzle.solve();
+            try {
+                TipOver puzzle = new TipOver(args[0]);
+                puzzle.solve();
+            } catch(IOException e){
+                e.printStackTrace();
+            }
         }else {
             System.out.println("USAGE: java TipOver {filename}");
         }
