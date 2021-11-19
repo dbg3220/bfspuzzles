@@ -51,7 +51,7 @@ public class TipOverConfig implements Configuration{
     /**
      * Copy constructor for this class
      */
-    protected TipOverConfig(TipOverConfig other){
+    private TipOverConfig(TipOverConfig other){
         this.grid = Arrays.copyOf(other.grid, other.grid.length);
         this.tipperLocation = new Coordinates(other.tipperLocation.row(), other.tipperLocation.col());
     }
