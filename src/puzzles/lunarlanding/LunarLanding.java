@@ -2,6 +2,10 @@ package puzzles.lunarlanding;
 
 import puzzles.lunarlanding.model.LunarLandingConfig;
 import solver.Configuration;
+import solver.Solver;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DESCRIPTION
@@ -26,6 +30,13 @@ public class LunarLanding {
         if (args.length == 1){
             String fileName = args[0];
             LunarLanding l = new LunarLanding(fileName);
+            Solver s = new Solver();
+            List<Configuration> path = s.BFS(l.lunarLandingConfiguration);
+            for(int i = 0; i < path.size(); i++){
+                System.out.println("Step " + i + ":");
+                LunarLandingConfig LLC = (LunarLandingConfig) path.get(i);
+                System.out.println(LLC.toString());
+            }
         }
         else{
             System.out.println("Input file name");

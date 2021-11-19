@@ -1,8 +1,11 @@
 package puzzles.lunarlanding.model;
 
+import puzzles.clock.ClockConfig;
+import puzzles.lunarlanding.LunarLanding;
 import solver.Configuration;
 import util.Coordinates;
 import util.Grid;
+import util.Coordinates.Direction;
 
 import java.io.*;
 import java.security.spec.RSAOtherPrimeInfo;
@@ -15,50 +18,118 @@ import java.util.*;
  */
 public class LunarLandingConfig implements Configuration {
 
+    /**
+     * A blank character
+     */
     private final Character blank = '_';
 
+    /**
+     * The spot that the explorer has to reach
+     */
     private Coordinates goalSpot;
 
-    private final Character lunarLander = 'X';
+    /**
+     * The locations of the robots on the board. The Character that represents the robot is a key
+     * and the coordinates are the value
+     */
+    private Map<Character, Coordinates> robotLocations = new HashMap<>();
 
-    private ArrayList<Coordinates> robotLocations = new ArrayList<>();
-
+    /**
+     * The board is represented by a Grid object
+     */
     private Grid<Character> board;
 
+    /**
+     * LunarLandingConfig is the constructor which takes a file name and
+     * creates a boards and initializes everything else associated with the board
+     * @param fileName: The name of the file which the information to initialize
+     *                the board is located
+     */
     public LunarLandingConfig(String fileName) {
-        try(BufferedReader reader = new BufferedReader(new FileReader(fileName))){
-            String line = reader.readLine();
+        try(BufferedReader reader = new BufferedReader(new FileReader(fileName))){ //try with resources
+            String line = reader.readLine(); //First line set up
             String[] boardArgs = line.split(" ");
             board = new Grid<Character>(blank, Integer.parseInt(boardArgs[0]), Integer.parseInt(boardArgs[1]) );
             goalSpot = new Coordinates( Integer.parseInt(boardArgs[2]), Integer.parseInt( boardArgs[3]));
-            int numRobots = 0;
-            while (!( line = reader.readLine()).equals("")){
+            while (!( line = reader.readLine()).equals("")){ //For each robot on the board
                 String[] robotArgs = line.split("\\s++");
                 Coordinates c = new Coordinates(Integer.parseInt(robotArgs[1]), Integer.parseInt(robotArgs[2]));
-                board.set(robotArgs[0].charAt(0), c);
-                robotLocations.add(c);
+                board.set(robotArgs[0].charAt(0), c); //Put the robots on the board
+                robotLocations.put(robotArgs[0].charAt(0), c); //Put the robots in the hashmap
             }
         }catch(IOException e){
             System.out.println("File not found!");
         }
-
     }
 
+    /**
+     * A copy constructor for the LunarLandingConfig
+     * @param l: the original lunar landing config
+     * @param robotLocations: The locations of the robots on the board (this was
+     *                        just created in the method calling the copy consturctor)
+     */
+    public LunarLandingConfig(LunarLandingConfig l, HashMap<Character, Coordinates> robotLocations){
+        Grid<Character> board = new Grid<Character>(blank, l.board.getNRows(), l.board.getNCols());
+        for(Character c : robotLocations.keySet()){ //Put the robots on the board
+            board.set(c, robotLocations.get(c));
+        }
+        this.board = board;
+        this.goalSpot = l.goalSpot;
+        this.robotLocations = robotLocations;
+    }
+
+    /**
+     * Checks if this configuration is the solution
+     * @return: True if it is the solution, false otherwise
+     */
     @Override
     public boolean isSolution() {
+        if (board.get(goalSpot.row(),goalSpot.col()).equals('E')){
+            return true;
+        }
         return false;
     }
 
+    /**
+     * Gets the neighbors of the current configuration
+     * @return an arraylist of neighbors
+     */
     @Override
     public List<Configuration> getNeighbors() {
-        return null;
+        ArrayList<Configuration> neighbors = new ArrayList<>();
+        for (Character robot : robotLocations.keySet()) { //For each robot on the board
+            Coordinates currentRobot = robotLocations.get(robot);
+            for (Direction d : Coordinates.CARDINAL_NEIGHBORS) { //For N, E, S, W
+                Coordinates movedPiece = movePiece(currentRobot, d.coords); //Move the piece
+                if (movedPiece == null){
+
+                }
+                else if ( movedPiece.row() == currentRobot.row() && movedPiece.col() == currentRobot.col() ){
+
+                }
+                else{ //If the piece moved and it is valid
+                    HashMap<Character, Coordinates> newLocations = new HashMap<>(); //Creates a new hashmap with the new location
+                    for (Character c : robotLocations.keySet()){
+                        newLocations.put(c, robotLocations.get(c));
+                        newLocations.put(robot, movedPiece);
+                    }
+                    Configuration neighbor = new LunarLandingConfig(this, newLocations );//Get the neighbor
+                    neighbors.add(neighbor); //Add the neighbor
+                }
+            }
+        }
+        return neighbors;
     }
 
+    /**
+     * Converts the board to toString
+     * @return a board
+     */
     @Override
     public String toString() {
         String result = "    ";
 
-        String[] boardResult = new String[board.getNRows()];
+        String[] boardResult = new String[board.getNRows()]; //Creates an array of each row of the board
         for (int r = 0; r < board.getNRows(); r++){
             String rowResult = "";
             for (int c = 0; c < board.getNCols(); c++){
@@ -72,13 +143,69 @@ public class LunarLandingConfig implements Configuration {
             boardResult[r] = rowResult;
         }
 
-        for (int c = 0; c < board.getNCols(); c++){
+        for (int c = 0; c < board.getNCols(); c++){ //Top numbers
             result += "  " + c;
         }
-        result += "\n    _______________\n";
-        for(int r = 0; r < board.getNRows(); r++){
+        result += "\n    ";
+        for (int c = 0; c < board.getNCols(); c++){ //Top dash
+            result += "___";
+        }
+        result += "\n";
+        for(int r = 0; r < board.getNRows(); r++){ //side numbers and the row of the board
             result += r + "  |" + boardResult[r] + "\n";
         }
         return result;
     }
+
+    /**
+     * Check to see if two configurations are equal based on the location of the robots
+     * @param other: the other configuration
+     * @return true if they are equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object other){
+        if(other instanceof LunarLandingConfig otherConfig) {
+            for (Character c : robotLocations.keySet()) {
+                if(!otherConfig.robotLocations.get(c).equals(this.robotLocations.get(c))){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Hash code based on the board
+     * @return an int
+     */
+    @Override
+    public int hashCode(){
+        return this.board.hashCode();
+    }
+
+    /**
+     * Moves each piece
+     * @param startingCoords: the coordinates that the robot starts at
+     * @param d: the direction the robot it trying to be moved
+     * @return: the new coords of the robot or null because it was invalid
+     */
+    private Coordinates movePiece(Coordinates startingCoords ,Coordinates d){
+        Coordinates currentCoords = startingCoords;
+        while (board.legalCoords(currentCoords.sum(d)) && board.get(currentCoords.sum(d)).equals(blank)){
+            currentCoords = currentCoords.sum(d);
+        }
+        if(!board.legalCoords(currentCoords.sum(d))){
+            return null;
+        }
+        else if (!board.get(currentCoords.sum(d)).equals(blank)){
+            return currentCoords;
+        }
+        else{
+            System.out.println("Something went wrong!");
+            return null;
+        }
+    }
+
+
 }
