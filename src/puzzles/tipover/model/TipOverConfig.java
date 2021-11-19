@@ -50,6 +50,7 @@ public class TipOverConfig implements Configuration{
 
     /**
      * Copy constructor for this class
+     * @param other The other TipOverConfig to be copied from
      */
     private TipOverConfig(TipOverConfig other){
         this.grid = Arrays.copyOf(other.grid, other.grid.length);
@@ -66,7 +67,7 @@ public class TipOverConfig implements Configuration{
     }
 
     @Override
-    public List<Configuration> getNeighbors() {
+    public List<Configuration> getNeighbors() {//UPDATE THIS SO THAT THE TIPPER CAN MOVE FROM A TOWER(GREATER THAN '1') TO ANOTHER TOWER WITHOUT TIPPING OVER
         List<Configuration> neighbors = new ArrayList<>();
         char tipperSquare = get(tipperLocation);
         if(tipperSquare == '1'){
