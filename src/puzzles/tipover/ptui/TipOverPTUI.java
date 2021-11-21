@@ -9,11 +9,12 @@ import java.io.PrintWriter;
 import java.util.List;
 
 /**
- * DESCRIPTION
+ * Text Based User Interface for the TipOverPuzzle. The user types in commands from the command line and
+ * the puzzle is displayed as a multi-line String.
  * @author Damon Gonzalez
  * November 2021
  */
-public class TipOverPTUI extends ConsoleApplication implements Observer<TipOverModel, Object> {
+public class TipOverPTUI extends ConsoleApplication implements Observer<TipOverModel, String> {
     /** The model being used by this Application */
     private TipOverModel model;
     /** The PrintWriter object that updates the game to the console */
@@ -25,6 +26,9 @@ public class TipOverPTUI extends ConsoleApplication implements Observer<TipOverM
     private final static String HINT = "hint";
     private final static String SHOW = "show";
 
+    /**
+     * Initializes the text-based interface to set up the game
+     */
     @Override
     public void init(){
         this.model = new TipOverModel();
@@ -34,6 +38,11 @@ public class TipOverPTUI extends ConsoleApplication implements Observer<TipOverM
             model.safeLoad(args.get(0));
     }
 
+    /**
+     * Creates the controller for the UI
+     * @param console Where the UI should print output. It is recommended to save
+     *                this object in a field in the subclass.
+     */
     @Override
     public void start(PrintWriter console) {
         this.out = console;
@@ -55,15 +64,24 @@ public class TipOverPTUI extends ConsoleApplication implements Observer<TipOverM
         );
         super.setOnCommand(
                 SHOW, 0, ": display the current state of the board",
-                e -> update(model, null)
+                e -> update(model, "")
         );
     }
 
+    /**
+     * Updates the state of the view by printing out various things according to commands given by the user
+     * @param model The model used by this UI
+     * @param data If not an empty string, than a move was requested that cannot be legally performed and it equals
+     *             the direction in which the move was requested. Otherwise, an empty string
+     */
     @Override
-    public void update(TipOverModel model, Object o) {
+    public void update(TipOverModel model, String data) {
         TipOverConfig currentConfig = model.getCurrentConfig();
         this.out.println(currentConfig);
-        if(currentConfig.isSolution()) {
+        if(!data.equals("")) {
+            System.out.println("Unable to move in " + data + " direction");
+        }
+        else if(currentConfig.isSolution()) {
             int steps = model.getNumSteps();
             this.out.println("YOU WIN!!!(in " + steps + " steps)");
             this.out.println("You can keep moving your tipper around(although, why would you want to do that),");
