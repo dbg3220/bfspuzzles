@@ -97,7 +97,7 @@ public class TipOverConfig implements Configuration{
         if(tipperSquare != '1')    {
             int towerLength = Integer.parseInt(String.valueOf(tipperSquare));
             Coordinates toNORTH = new Coordinates(tipperLocation.row() - towerLength, tipperLocation.col());
-            if(tipperLocation.row() > 1 && isClear(NORTH, toNORTH)){
+            if(tipperLocation.row() > towerLength && isClear(NORTH, toNORTH)){
                 TipOverConfig neighbor = new TipOverConfig(this);
                 neighbor.towerFall(NORTH, toNORTH);
                 neighbor.set(neighbor.tipperLocation, '0');
@@ -105,7 +105,7 @@ public class TipOverConfig implements Configuration{
                 neighbors.add(neighbor);
             }
             Coordinates toSOUTH = new Coordinates(tipperLocation.row() + towerLength, tipperLocation.col());
-            if(tipperLocation.row() + 2 < rows && isClear(SOUTH, toSOUTH)){
+            if(tipperLocation.row() + towerLength - 1 < rows && isClear(SOUTH, toSOUTH)){
                 TipOverConfig neighbor = new TipOverConfig(this);
                 neighbor.towerFall(SOUTH, toSOUTH);
                 neighbor.set(neighbor.tipperLocation, '0');
@@ -113,7 +113,7 @@ public class TipOverConfig implements Configuration{
                 neighbors.add(neighbor);
             }
             Coordinates toWEST = new Coordinates(tipperLocation.row(), tipperLocation.col() - towerLength);
-            if(tipperLocation.col() > 1 && isClear(WEST, toWEST)){
+            if(tipperLocation.col() > towerLength && isClear(WEST, toWEST)){
                 TipOverConfig neighbor = new TipOverConfig(this);
                 neighbor.towerFall(WEST, toWEST);
                 neighbor.set(neighbor.tipperLocation, '0');
@@ -121,7 +121,7 @@ public class TipOverConfig implements Configuration{
                 neighbors.add(neighbor);
             }
             Coordinates toEAST = new Coordinates(tipperLocation.row(), tipperLocation.col() + towerLength);
-            if(tipperLocation.col() + 2 < cols && isClear(EAST, toEAST)){
+            if(tipperLocation.col() + towerLength - 1 < cols && isClear(EAST, toEAST)){
                 TipOverConfig neighbor = new TipOverConfig(this);
                 neighbor.towerFall(EAST, toEAST);
                 neighbor.set(neighbor.tipperLocation, '0');
@@ -201,9 +201,9 @@ public class TipOverConfig implements Configuration{
     }
 
     /**
-     * Private helper function to abstract configuration's relationship to the array of characters representing
+     * Public helper function to abstract configuration's relationship to the array of characters representing
      *  a two-dimensional grid. Returns a char at a given location in grid; Guaranteed
-     *  to be valid coordinates of grid
+     *  to be valid coordinates of grid. It is public because the GUI must use is to get elements of the grid
      * @param a The Coordinate object that represents its row, col location
      * @return The char being gotten
      */
@@ -282,4 +282,16 @@ public class TipOverConfig implements Configuration{
             }
         }
     }
+
+    /**
+     * Public getter for the location of the tipper
+     * @return The location of the tipper, as a Coordinates object
+     */
+    public Coordinates getTipperLocation() { return tipperLocation; }
+
+    /**
+     * Public getter for the location of the goal
+     * @return The location of the goal crate, as a Coordinates object
+     */
+    public static Coordinates getGoal() { return goal; }
 }
