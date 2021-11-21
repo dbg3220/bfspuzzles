@@ -207,7 +207,7 @@ public class TipOverConfig implements Configuration{
      * @param a The Coordinate object that represents its row, col location
      * @return The char being gotten
      */
-    private char get(Coordinates a){
+    public char get(Coordinates a){
         int index = a.row() * cols + a.col();
         return grid[index];
     }
@@ -294,4 +294,16 @@ public class TipOverConfig implements Configuration{
      * @return The location of the goal crate, as a Coordinates object
      */
     public static Coordinates getGoal() { return goal; }
+
+    /**
+     * Public getter for the amount of rows in this puzzle
+     * @return The amount of rows of the grid in the puzzle
+     */
+    public static int getRows() { return rows; }
+
+    /**
+     * Public getter for the amount of columns in this puzzle
+     * @return The amount of columns of the grid in the puzzle
+     */
+    public static int getCols() { return cols; }
 }
