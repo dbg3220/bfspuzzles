@@ -105,7 +105,7 @@ public class TipOverConfig implements Configuration{
                 neighbors.add(neighbor);
             }
             Coordinates toSOUTH = new Coordinates(tipperLocation.row() + towerLength, tipperLocation.col());
-            if(tipperLocation.row() + towerLength - 1 < rows && isClear(SOUTH, toSOUTH)){
+            if(tipperLocation.row() + towerLength < rows && isClear(SOUTH, toSOUTH)){
                 TipOverConfig neighbor = new TipOverConfig(this);
                 neighbor.towerFall(SOUTH, toSOUTH);
                 neighbor.set(neighbor.tipperLocation, '0');
@@ -121,7 +121,7 @@ public class TipOverConfig implements Configuration{
                 neighbors.add(neighbor);
             }
             Coordinates toEAST = new Coordinates(tipperLocation.row(), tipperLocation.col() + towerLength);
-            if(tipperLocation.col() + towerLength - 1 < cols && isClear(EAST, toEAST)){
+            if(tipperLocation.col() + towerLength < cols && isClear(EAST, toEAST)){
                 TipOverConfig neighbor = new TipOverConfig(this);
                 neighbor.towerFall(EAST, toEAST);
                 neighbor.set(neighbor.tipperLocation, '0');

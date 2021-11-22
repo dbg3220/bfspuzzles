@@ -96,7 +96,7 @@ public class TipOverModel {
      */
     private Coordinates getCoordinates(String direction){
         Coordinates tipperLocation = currentConfig.getTipperLocation();
-        switch (direction){
+        switch (direction.toUpperCase()){
             case "NORTH" -> {
                 return new Coordinates(tipperLocation.row() - 1, tipperLocation.col());
             }
