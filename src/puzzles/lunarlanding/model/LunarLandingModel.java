@@ -1,23 +1,175 @@
 package puzzles.lunarlanding.model;
 
+import solver.Configuration;
+import solver.Solver;
+import util.Observer;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * DESCRIPTION
- * @author YOUR NAME HERE
+ * The LunarLandingModel represents the game board. It is part of the MVC
+ * model for user interfaces
+ * @author George Banacos
  * November 2021
  */
-public class LunarLandingModel {
+public class LunarLandingModel{
 
-    private LunarLandingConfig currentConfig;
-
-    /*
-     * Code here includes...
-     * Additional data variables for anything needed beyond what is in
-     *   the config object to describe the current state of the puzzle
-     * Methods to support the controller part of the GUI, e.g., load, move
-     * Methods and data to support the "subject" side of the Observer pattern
-     *
-     * WARNING: To support the hint command, you will likely have to do
-     *   a cast of Config to LunarLandingConfig somewhere, since the solve
-     *   method works with, and returns, objects of type Configuration.
+    /**
+     * A list of viewers observing the model
      */
+    private List<Observer< LunarLandingModel, String > > subjects = new ArrayList<>();
+    /**
+     * The configuration of the lunarlandingconfig
+     */
+    private LunarLandingConfig config;
+    /**
+     * isChosen keeps track of if a robot is chosen
+     */
+    private boolean isChosen = false;
+    /**
+     * curRow keeps track of the row selected
+     */
+    private int curRow;
+    /**
+     * curCol keeps track of the column selected
+     */
+    private int curCol;
+    /**
+     * The solver that can solve the puzzle using BFS
+     */
+    private static Solver s = new Solver();
+    /**
+     * The name of the last file opened
+     */
+    private String latestFile;
+
+    /**
+     * Constructs a model object by creating a LunarLandingConfig
+     * @param fileName: The name of the file that represents the board
+     */
+    public LunarLandingModel(String fileName){
+        load(fileName);
+    }
+
+    /**
+     * The reload method reloads the latest file loaded.
+     */
+    public void reload(){
+        config = new LunarLandingConfig(latestFile);
+        announce("show");
+        announce("loaded");
+    }
+
+    /**
+     * Loads a file describing a LunarLanding board
+     * @param fileName: The name of the file being loaded
+     */
+    public void load(String fileName){
+        latestFile = fileName;
+        this.reload();
+    }
+
+    /**
+     * Adds an observer to this model
+     * @param o: The viewer of the model
+     */
+    public void addObserver(Observer o){
+        subjects.add(o);
+    }
+
+    /**
+     * Tries to select a robot at a certain row and column
+     * @param row: A specific row
+     * @param col: A specific column
+     */
+    public void selection(int row, int col){
+        if(config.robotAtLocation(row, col)) { //If there is a robot at the location
+            this.curRow = row;
+            this.curCol = col;
+            this.isChosen = true;
+        }
+        else{
+            announce("No figure at that position\n");
+        }
+    }
+
+    /**
+     * Moves the robot if a robot is selected
+     * @param direction: The direction that the robot tries to move
+     */
+    public void move(String direction){
+        if (!isChosen){ //if a robot isn't chosen
+            announce("Choose a character to move first");
+        }
+        else {
+            int directionValue = switch (direction) { //Turns the direction into a number for the config.movePiece method
+                case "north" -> 0;
+                case "east" -> 2;
+                case "south" -> 4;
+                case "west" -> 6;
+                default -> -1;
+            };
+            if (directionValue != -1) {
+                boolean isValid = config.movePiece(curRow, curCol, directionValue);
+                isChosen = false;
+                if (isValid) {
+                    announce("show");
+                }
+                else{
+                    announce("Illegal move");
+                }
+            }
+            else{
+                announce("Illegal move");
+            }
+            if(config.isSolution()){
+                announce("I WON!");
+            }
+        }
+    }
+
+    /**
+     * Gets the next hint toward the goal. A solver is called on the config which
+     * does a BFS search to find the path to the goal. Even if the user makes a
+     * change to the state of the board the getHint will use the current board
+     * state as a start of the path.
+     */
+    public void getHint(){
+        List<Configuration> steps;
+        steps = s.BFS(config);
+        if(steps.size() == 0){
+            announce("Unsolvable board");
+        }
+        else if(steps.size() == 1){//If there is only one step to the solution (the solution has been found)
+            announce("Current board is already solved");
+        }
+        else{
+            config = (LunarLandingConfig) steps.get(1); //Sets the next step config to the current config
+            announce("show");
+            if (config.isSolution()){
+                announce("I WON!");
+            }
+        }
+    }
+
+    /**
+     * Calls the toString of the config has the model's toString
+     * @return config's toString
+     */
+    @Override
+    public String toString(){
+        return config.toString();
+    }
+
+    /**
+     * Updates all of the subjects of this model that a change has happened
+     * @param message: The message that is being sent.
+     */
+    private void announce(String message){
+        for ( var obs : this.subjects){
+            obs.update(this, message);
+        }
+    }
+
 }

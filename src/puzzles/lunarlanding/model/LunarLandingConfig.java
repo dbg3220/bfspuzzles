@@ -12,7 +12,8 @@ import java.security.spec.RSAOtherPrimeInfo;
 import java.util.*;
 
 /**
- * DESCRIPTION
+ * The lunarLandingConfig represents and manipulates a board
+ * for the game of LunarLanding
  * @author George Banacos
  * November 2021
  */
@@ -58,7 +59,7 @@ public class LunarLandingConfig implements Configuration {
                 robotLocations.put(robotArgs[0].charAt(0), c); //Put the robots in the hashmap
             }
         }catch(IOException e){
-            System.out.println("File not found!");
+            System.out.println("File could not be opened");
         }
     }
 
@@ -77,6 +78,45 @@ public class LunarLandingConfig implements Configuration {
         this.goalSpot = l.goalSpot;
         this.robotLocations = robotLocations;
     }
+
+    /**
+     * This is a public method that allows a LunarLandingConfig to use the private
+     * method movePiece without having to use getNeighbors.
+     * @param row: The row that the robot is at
+     * @param col: The column that the robot is at
+     * @param direction: The direction that the robot is trying to be used in
+     * @return: False if it isn't a valid move, true otherwise.
+     */
+    public boolean movePiece(int row, int col, int direction){
+        Coordinates coords = new Coordinates(row, col);
+        Character robot = board.get(row, col);
+        Coordinates directionDelta;
+        directionDelta = Direction.values()[direction].coords;
+        Coordinates newCoords = movePiece(coords, directionDelta);
+        if (newCoords == null){
+            return false;
+        }
+        else if(!(newCoords.equals(coords))) {
+            robotLocations.put(robot, newCoords);
+            board.set(blank, coords);
+            board.set(robot, newCoords);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * This method checks to see if there is a robot at the location specified by the row and column
+     * @param row: The row selected
+     * @param col: the column selected
+     * @return: True if there is a robot at the location, false otherwise
+     */
+    public boolean robotAtLocation(int row, int col){
+        return !board.get(row, col).equals(blank);
+    }
+
 
     /**
      * Checks if this configuration is the solution
@@ -206,6 +246,4 @@ public class LunarLandingConfig implements Configuration {
             return null;
         }
     }
-
-
 }

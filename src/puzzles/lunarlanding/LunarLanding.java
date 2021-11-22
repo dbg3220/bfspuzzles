@@ -14,10 +14,16 @@ import java.util.List;
  */
 public class LunarLanding {
 
+    /**
+     * The configuration for the LunarLanding solver
+     */
     private Configuration lunarLandingConfiguration;
 
+    /**
+     * Constructs a LunarLanding.
+     * @param fileName: The file name for the LunarLandingConfig to use
+     */
     public LunarLanding(String fileName){
-
         lunarLandingConfiguration = new LunarLandingConfig(fileName);
     }
 
@@ -25,7 +31,6 @@ public class LunarLanding {
      * code to read the file name from the command line and
      * run the solver on the puzzle
      */
-
     public static void main( String[] args ) {
         if (args.length == 1){
             String fileName = args[0];
