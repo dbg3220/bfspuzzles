@@ -50,6 +50,7 @@ public class TipOverConfig implements Configuration{
 
     /**
      * Copy constructor for this class
+     * @param other The other TipOverConfig to be copied from
      */
     private TipOverConfig(TipOverConfig other){
         this.grid = Arrays.copyOf(other.grid, other.grid.length);
@@ -66,70 +67,65 @@ public class TipOverConfig implements Configuration{
     }
 
     @Override
-    public List<Configuration> getNeighbors() {
+    public List<Configuration> getNeighbors() {//UPDATE THIS SO THAT THE TIPPER CAN MOVE FROM A TOWER(GREATER THAN '1') TO ANOTHER TOWER WITHOUT TIPPING OVER
         List<Configuration> neighbors = new ArrayList<>();
         char tipperSquare = get(tipperLocation);
-        if(tipperSquare == '1'){
-            Coordinates NORTH = new Coordinates(tipperLocation.row() - 1, tipperLocation.col());
-            if(tipperLocation.row() > 0 && get(NORTH) != '0'){
+        Coordinates NORTH = new Coordinates(tipperLocation.row() - 1, tipperLocation.col());
+        if(tipperLocation.row() > 0 && get(NORTH) != '0'){
+            TipOverConfig neighbor = new TipOverConfig(this);
+            neighbor.tipperLocation = NORTH;
+            neighbors.add(neighbor);
+        }
+        Coordinates SOUTH = new Coordinates(tipperLocation.row() + 1, tipperLocation.col());
+        if(tipperLocation.row() + 1 < rows && get(SOUTH) != '0'){
+            TipOverConfig neighbor = new TipOverConfig(this);
+            neighbor.tipperLocation = SOUTH;
+            neighbors.add(neighbor);
+        }
+        Coordinates WEST = new Coordinates(tipperLocation.row(), tipperLocation.col() - 1);
+        if(tipperLocation.col() > 0 && get(WEST) != '0'){
+            TipOverConfig neighbor = new TipOverConfig(this);
+            neighbor.tipperLocation = WEST;
+            neighbors.add(neighbor);
+        }
+        Coordinates EAST = new Coordinates(tipperLocation.row(), tipperLocation.col() + 1);
+        if(tipperLocation.col() + 1 < cols && get(EAST) != '0'){
+            TipOverConfig neighbor = new TipOverConfig(this);
+            neighbor.tipperLocation = EAST;
+            neighbors.add(neighbor);
+        }
+        if(tipperSquare != '1')    {
+            int towerLength = Integer.parseInt(String.valueOf(tipperSquare));
+            Coordinates toNORTH = new Coordinates(tipperLocation.row() - towerLength, tipperLocation.col());
+            if(tipperLocation.row() > towerLength && isClear(NORTH, toNORTH)){
                 TipOverConfig neighbor = new TipOverConfig(this);
+                neighbor.towerFall(NORTH, toNORTH);
+                neighbor.set(neighbor.tipperLocation, '0');
                 neighbor.tipperLocation = NORTH;
                 neighbors.add(neighbor);
             }
-            Coordinates SOUTH = new Coordinates(tipperLocation.row() + 1, tipperLocation.col());
-            if(tipperLocation.row() + 1 < rows && get(SOUTH) != '0'){
+            Coordinates toSOUTH = new Coordinates(tipperLocation.row() + towerLength, tipperLocation.col());
+            if(tipperLocation.row() + towerLength < rows && isClear(SOUTH, toSOUTH)){
                 TipOverConfig neighbor = new TipOverConfig(this);
+                neighbor.towerFall(SOUTH, toSOUTH);
+                neighbor.set(neighbor.tipperLocation, '0');
                 neighbor.tipperLocation = SOUTH;
                 neighbors.add(neighbor);
             }
-            Coordinates WEST = new Coordinates(tipperLocation.row(), tipperLocation.col() - 1);
-            if(tipperLocation.col() > 0 && get(WEST) != '0'){
+            Coordinates toWEST = new Coordinates(tipperLocation.row(), tipperLocation.col() - towerLength);
+            if(tipperLocation.col() > towerLength && isClear(WEST, toWEST)){
                 TipOverConfig neighbor = new TipOverConfig(this);
+                neighbor.towerFall(WEST, toWEST);
+                neighbor.set(neighbor.tipperLocation, '0');
                 neighbor.tipperLocation = WEST;
                 neighbors.add(neighbor);
             }
-            Coordinates EAST = new Coordinates(tipperLocation.row(), tipperLocation.col() + 1);
-            if(tipperLocation.col() + 1 < cols && get(EAST) != '0'){
-                TipOverConfig neighbor = new TipOverConfig(this);
-                neighbor.tipperLocation = EAST;
-                neighbors.add(neighbor);
-            }
-        } else {
-            int towerLength = Integer.parseInt(String.valueOf(tipperSquare));
-            Coordinates fromNORTH = new Coordinates(tipperLocation.row() - 1, tipperLocation.col());
-            Coordinates toNORTH = new Coordinates(tipperLocation.row() - towerLength, tipperLocation.col());
-            if(tipperLocation.row() > 1 && isClear(fromNORTH, toNORTH)){
-                TipOverConfig neighbor = new TipOverConfig(this);
-                neighbor.towerFall(fromNORTH, toNORTH);
-                neighbor.set(neighbor.tipperLocation, '0');
-                neighbor.tipperLocation = fromNORTH;
-                neighbors.add(neighbor);
-            }
-            Coordinates fromSOUTH = new Coordinates(tipperLocation.row() + 1, tipperLocation.col());
-            Coordinates toSOUTH = new Coordinates(tipperLocation.row() + towerLength, tipperLocation.col());
-            if(tipperLocation.row() + 2 < rows && isClear(fromSOUTH, toSOUTH)){
-                TipOverConfig neighbor = new TipOverConfig(this);
-                neighbor.towerFall(fromSOUTH, toSOUTH);
-                neighbor.set(neighbor.tipperLocation, '0');
-                neighbor.tipperLocation = fromSOUTH;
-                neighbors.add(neighbor);
-            }
-            Coordinates fromWEST = new Coordinates(tipperLocation.row(), tipperLocation.col() - 1);
-            Coordinates toWEST = new Coordinates(tipperLocation.row(), tipperLocation.col() - towerLength);
-            if(tipperLocation.col() > 1 && isClear(fromWEST, toWEST)){
-                TipOverConfig neighbor = new TipOverConfig(this);
-                neighbor.towerFall(fromWEST, toWEST);
-                neighbor.set(neighbor.tipperLocation, '0');
-                neighbor.tipperLocation = fromWEST;
-                neighbors.add(neighbor);
-            }
-            Coordinates fromEAST = new Coordinates(tipperLocation.row(), tipperLocation.col() + 1);
             Coordinates toEAST = new Coordinates(tipperLocation.row(), tipperLocation.col() + towerLength);
-            if(tipperLocation.col() + 2 < cols && isClear(fromEAST, toEAST)){
+            if(tipperLocation.col() + towerLength < cols && isClear(EAST, toEAST)){
                 TipOverConfig neighbor = new TipOverConfig(this);
-                neighbor.towerFall(fromEAST, toEAST);
+                neighbor.towerFall(EAST, toEAST);
                 neighbor.set(neighbor.tipperLocation, '0');
-                neighbor.tipperLocation = fromEAST;
+                neighbor.tipperLocation = EAST;
                 neighbors.add(neighbor);
             }
         }
@@ -205,13 +201,13 @@ public class TipOverConfig implements Configuration{
     }
 
     /**
-     * Private helper function to abstract configuration's relationship to the array of characters representing
+     * Public helper function to abstract configuration's relationship to the array of characters representing
      *  a two-dimensional grid. Returns a char at a given location in grid; Guaranteed
-     *  to be valid coordinates of grid
+     *  to be valid coordinates of grid. It is public because the GUI must use is to get elements of the grid
      * @param a The Coordinate object that represents its row, col location
      * @return The char being gotten
      */
-    private char get(Coordinates a){
+    public char get(Coordinates a){
         int index = a.row() * cols + a.col();
         return grid[index];
     }
@@ -286,4 +282,28 @@ public class TipOverConfig implements Configuration{
             }
         }
     }
+
+    /**
+     * Public getter for the location of the tipper
+     * @return The location of the tipper, as a Coordinates object
+     */
+    public Coordinates getTipperLocation() { return tipperLocation; }
+
+    /**
+     * Public getter for the location of the goal
+     * @return The location of the goal crate, as a Coordinates object
+     */
+    public static Coordinates getGoal() { return goal; }
+
+    /**
+     * Public getter for the amount of rows in this puzzle
+     * @return The amount of rows of the grid in the puzzle
+     */
+    public static int getRows() { return rows; }
+
+    /**
+     * Public getter for the amount of columns in this puzzle
+     * @return The amount of columns of the grid in the puzzle
+     */
+    public static int getCols() { return cols; }
 }

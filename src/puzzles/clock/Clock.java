@@ -41,7 +41,10 @@ public class Clock {
     private void solve(){
         System.out.println("Hours: " + hours + ", Start: " + start + ", End: " + end);
         Configuration startConfig = new ClockConfig(start, this);
-        List<Configuration> path = Solver.BFS(startConfig);
+        Solver solver = new Solver();
+        List<Configuration> path = solver.BFS(startConfig);
+        System.out.println("Total Configs: " + solver.getTotalConfigs());
+        System.out.println("Unique Configs: " + solver.getUniqueConfigs());
         if(path.size() == 0) System.out.println("No solution");
         for(int i = 0; i < path.size(); i++)
             System.out.println("Step " + i + ": " + path.get(i));

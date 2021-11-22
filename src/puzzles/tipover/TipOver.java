@@ -32,7 +32,10 @@ public class TipOver {
     public void solve(){
         System.out.println("Start Configuration: ");
         System.out.println(initialConfig);
-        List<Configuration> path = Solver.BFS(initialConfig);
+        Solver solver = new Solver();
+        List<Configuration> path = solver.BFS(initialConfig);
+        System.out.println("Total Configs: " + solver.getTotalConfigs());
+        System.out.println("Unique Configs: " + solver.getUniqueConfigs());
         if(path.size() == 0)
             System.out.println("No Solution");
         for(int i = 0; i < path.size(); i++){
