@@ -38,7 +38,10 @@ public class Water {
     public void solve(){
         System.out.println("Amount: " + amount + ", Buckets: " + Arrays.toString(bucketCapacities));
         Configuration startConfig = new WaterConfig(new int[bucketCapacities.length], this);
-        List<Configuration> path = Solver.BFS(startConfig);
+        Solver solver = new Solver();
+        List<Configuration> path = solver.BFS(startConfig);
+        System.out.println("Total Configs: " + solver.getTotalConfigs());
+        System.out.println("Unique Configs: " + solver.getUniqueConfigs());
         if(path.size() == 0) System.out.println("No solution");
         for(int i = 0; i < path.size(); i++)
             System.out.println("Step " + i + ": " + path.get(i));

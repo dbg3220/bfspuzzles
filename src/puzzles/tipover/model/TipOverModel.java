@@ -61,8 +61,9 @@ public class TipOverModel {
      * there is no solution, then the user is not told and a valid move is chosen at random.
      */
     public void cheat(){
-        List<Configuration> path = Solver.BFS(currentConfig);
-        if(path.size() > 1) currentConfig = (TipOverConfig) Solver.BFS(currentConfig).get(1);
+        Solver solver = new Solver();
+        List<Configuration> path = solver.BFS(currentConfig);
+        if(path.size() > 1) currentConfig = (TipOverConfig) path.get(1);
         else currentConfig = (TipOverConfig) currentConfig.getNeighbors().get((int) (currentConfig.getNeighbors().size() * Math.random()));
         steps++;
         notifyObservers("");
