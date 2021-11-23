@@ -18,8 +18,9 @@ import java.util.List;
  * November 2021
  */
 public class TipOverGUI extends Application
-        implements Observer< TipOverModel, Object > {
+        implements Observer< TipOverModel, String > {
 
+    /** The model used by this GUI */
     private TipOverModel model;
 
     /**
@@ -50,7 +51,7 @@ public class TipOverGUI extends Application
     }
 
     @Override
-    public void update( TipOverModel tipOverModel, Object o ) {
+    public void update( TipOverModel tipOverModel, String o ) {
         System.out.println( "My model has changed! (DELETE THIS LINE)");
     }
 
