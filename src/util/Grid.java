@@ -46,7 +46,7 @@ import java.util.Objects;
  * @author RIT CS
  * September 2021
  */
-public class Grid< Thing> {
+public class Grid< Thing > {
 
     private final int nRows;
     private final int nCols;
