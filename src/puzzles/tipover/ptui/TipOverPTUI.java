@@ -77,16 +77,20 @@ public class TipOverPTUI extends ConsoleApplication implements Observer<TipOverM
     @Override
     public void update(TipOverModel model, String data) {
         TipOverConfig currentConfig = model.getCurrentConfig();
-        this.out.println(currentConfig);
-        if(!data.equals("")) {
-            System.out.println("Unable to move in " + data + " direction");
+        if(currentConfig == null){
+            System.out.println("No File Loaded");
         }
-        else if(currentConfig.isSolution()) {
-            int steps = model.getNumSteps();
-            this.out.println("YOU WIN!!!(in " + steps + " steps)");
-            this.out.println("You can keep moving your tipper around(although, why would you want to do that),");
-            this.out.println("You can reload the same puzzle to see if there is a faster way, or");
-            this.out.println("You can load a totally new puzzle");
+        else {
+            System.out.println(currentConfig);
+            if (!data.equals("")) {
+                System.out.println("Unable to move in " + data + " direction");
+            } else if (currentConfig.isSolution()) {
+                int steps = model.getNumSteps();
+                this.out.println("YOU WIN!!!(in " + steps + " steps)");
+                this.out.println("You can keep moving your tipper around(although, why would you want to do that),");
+                this.out.println("You can reload the same puzzle to see if there is a faster way, or");
+                this.out.println("You can load a totally new puzzle");
+            }
         }
     }
 
