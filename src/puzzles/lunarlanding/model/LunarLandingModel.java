@@ -2,10 +2,13 @@ package puzzles.lunarlanding.model;
 
 import solver.Configuration;
 import solver.Solver;
+import util.Coordinates;
 import util.Observer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The LunarLandingModel represents the game board. It is part of the MVC
@@ -30,11 +33,7 @@ public class LunarLandingModel{
     /**
      * curRow keeps track of the row selected
      */
-    private int curRow;
-    /**
-     * curCol keeps track of the column selected
-     */
-    private int curCol;
+    private Coordinates currentCoords;
     /**
      * The solver that can solve the puzzle using BFS
      */
@@ -74,7 +73,7 @@ public class LunarLandingModel{
      * Adds an observer to this model
      * @param o: The viewer of the model
      */
-    public void addObserver(Observer o){
+    public void addObserver(Observer< LunarLandingModel, String > o){
         subjects.add(o);
     }
 
@@ -85,9 +84,9 @@ public class LunarLandingModel{
      */
     public void selection(int row, int col){
         if(config.robotAtLocation(row, col)) { //If there is a robot at the location
-            this.curRow = row;
-            this.curCol = col;
+            this.currentCoords = new Coordinates(row,col);
             this.isChosen = true;
+            announce("selection");
         }
         else{
             announce("No figure at that position\n");
@@ -111,9 +110,10 @@ public class LunarLandingModel{
                 default -> -1;
             };
             if (directionValue != -1) {
-                boolean isValid = config.movePiece(curRow, curCol, directionValue);
+                Coordinates newCoords = config.movePiece(currentCoords, directionValue);
                 isChosen = false;
-                if (isValid) {
+                if (newCoords != null) {
+                    String message = "show " + currentCoords.row() + " " + currentCoords.col() + " " + newCoords.row() + " " + newCoords.col();
                     announce("show");
                 }
                 else{
@@ -124,7 +124,7 @@ public class LunarLandingModel{
                 announce("Illegal move");
             }
             if(config.isSolution()){
-                announce("I WON!");
+                announce("YOU WON!");
             }
         }
     }
@@ -152,6 +152,34 @@ public class LunarLandingModel{
             }
         }
     }
+
+    /**
+     * Gets the height of the board
+     * @return board height
+     */
+    public int getBoardHeight(){
+        return config.getHeight();
+    }
+
+    /**
+     * Gets the length of the board
+     * @return board length
+     */
+    public int getBoardLength(){
+        return config.getLength();
+    }
+
+    /**
+     * Gets the coordinates of the goal spot
+     * @return goal spot coordinates
+     */
+    public Coordinates getGoal(){ return config.getGoal(); }
+
+    /**
+     * Gets the locations of all the robots
+     * @return a dictionary of robot locations
+     */
+    public Map<Character, Coordinates> getRobotLocations(){ return config.getRobotLocations(); }
 
     /**
      * Calls the toString of the config has the model's toString

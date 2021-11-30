@@ -52,11 +52,11 @@ public class LunarLandingPTUI implements Observer<LunarLandingModel, String> {
      */
     @Override
     public void update(LunarLandingModel l, String arg){
-        switch (arg){
+        switch (arg.split(" ")[0]){
             case "carrot":
                 System.out.print("> ");
                 break;
-            case "illegal command":
+            case "illegal":
                 System.out.println("Illegal command"); //Purposefully excluded break
             case "help":
                 this.help();
@@ -64,6 +64,8 @@ public class LunarLandingPTUI implements Observer<LunarLandingModel, String> {
             case "show":
                 System.out.println();
                 System.out.println(l.toString());
+                break;
+            case "selection":
                 break;
             default:
                 System.out.println(arg);
