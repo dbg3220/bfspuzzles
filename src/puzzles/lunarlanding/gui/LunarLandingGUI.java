@@ -109,6 +109,7 @@ public class LunarLandingGUI extends Application
     public void start( Stage stage ) {
         stage.setTitle( "Lunar Landing" );
 
+
         board = new GridPane();
         addCellsToGrid(board, createBoard());
 
@@ -125,7 +126,6 @@ public class LunarLandingGUI extends Application
                 fileChooser.setTitle("Open Resource File");
                 File loadFile = fileChooser.showOpenDialog(stage);
                 if (loadFile != null){
-                    System.out.println(loadFile.getName());
                     model.load("data/lunarlanding/" + loadFile.getName());
                 }
             });
@@ -167,6 +167,7 @@ public class LunarLandingGUI extends Application
             case "Illegal move" -> output.setText("Illegal move");
             case "loaded" -> output.setText("File loaded");
             case "selection" -> output.setText("");
+            case "space" -> output.setText("");
             default -> output.setText(message);
         }
     }

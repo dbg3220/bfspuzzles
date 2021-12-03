@@ -5,6 +5,7 @@ import solver.Solver;
 import util.Coordinates;
 import util.Observer;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,11 @@ public class LunarLandingModel{
     private String latestFile;
 
     /**
+     * The name of the current file being opened
+     */
+    private String currentFile;
+
+    /**
      * Constructs a model object by creating a LunarLandingConfig
      * @param fileName: The name of the file that represents the board
      */
@@ -55,9 +61,16 @@ public class LunarLandingModel{
      * The reload method reloads the latest file loaded.
      */
     public void reload(){
-        config = new LunarLandingConfig(latestFile);
-        announce("show");
-        announce("loaded");
+        LunarLandingConfig oldConfig = config;
+        try {
+            config = new LunarLandingConfig(currentFile);
+            latestFile = currentFile;
+            announce("show");
+            announce("loaded");
+        }catch (FileNotFoundException e){
+            config = oldConfig;
+            currentFile = latestFile;
+        }
     }
 
     /**
@@ -65,7 +78,7 @@ public class LunarLandingModel{
      * @param fileName: The name of the file being loaded
      */
     public void load(String fileName){
-        latestFile = fileName;
+        currentFile = fileName;
         this.reload();
     }
 
@@ -87,9 +100,10 @@ public class LunarLandingModel{
             this.currentCoords = new Coordinates(row,col);
             this.isChosen = true;
             announce("selection");
+            announce("space");
         }
         else{
-            announce("No figure at that position\n");
+            announce("No figure at that position");
         }
     }
 
@@ -113,7 +127,6 @@ public class LunarLandingModel{
                 Coordinates newCoords = config.movePiece(currentCoords, directionValue);
                 isChosen = false;
                 if (newCoords != null) {
-                    String message = "show " + currentCoords.row() + " " + currentCoords.col() + " " + newCoords.row() + " " + newCoords.col();
                     announce("show");
                 }
                 else{

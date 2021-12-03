@@ -46,7 +46,7 @@ public class LunarLandingConfig implements Configuration {
      * @param fileName: The name of the file which the information to initialize
      *                the board is located
      */
-    public LunarLandingConfig(String fileName) {
+    public LunarLandingConfig(String fileName) throws FileNotFoundException{
         try(BufferedReader reader = new BufferedReader(new FileReader(fileName))){ //try with resources
             String line = reader.readLine(); //First line set up
             String[] boardArgs = line.split(" ");
@@ -60,6 +60,7 @@ public class LunarLandingConfig implements Configuration {
             }
         }catch(IOException e){
             System.out.println("File could not be opened");
+            throw new FileNotFoundException("sadf");
         }
     }
 
@@ -94,14 +95,11 @@ public class LunarLandingConfig implements Configuration {
         if (newCoords == null){
             return null;
         }
-        else if(!(newCoords.equals(coords))) {
+        else{
             robotLocations.put(robot, newCoords);
             board.set(blank, coords);
             board.set(robot, newCoords);
             return newCoords;
-        }
-        else{
-            return null;
         }
     }
 

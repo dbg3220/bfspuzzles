@@ -4,6 +4,7 @@ import puzzles.lunarlanding.model.LunarLandingConfig;
 import solver.Configuration;
 import solver.Solver;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,11 @@ public class LunarLanding {
      * @param fileName: The file name for the LunarLandingConfig to use
      */
     public LunarLanding(String fileName){
-        lunarLandingConfiguration = new LunarLandingConfig(fileName);
+        try {
+            lunarLandingConfiguration = new LunarLandingConfig(fileName);
+        } catch (FileNotFoundException e){
+
+        }
     }
 
     /*

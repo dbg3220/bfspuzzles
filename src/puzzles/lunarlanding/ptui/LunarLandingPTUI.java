@@ -61,6 +61,12 @@ public class LunarLandingPTUI implements Observer<LunarLandingModel, String> {
             case "help":
                 this.help();
                 break;
+            case "loaded":
+                System.out.println("File loaded");
+                break;
+            case "space":
+                System.out.println("");
+                break;
             case "show":
                 System.out.println();
                 System.out.println(l.toString());
@@ -109,6 +115,7 @@ public class LunarLandingPTUI implements Observer<LunarLandingModel, String> {
                 case "go":
                     if (inputArgs.length == 2) { //Checking for the correct number of arguments
                         model.move(inputArgs[1]);
+                        //update(model," ");
                     }
                     else{
                         System.out.println("Number of arguments error");
