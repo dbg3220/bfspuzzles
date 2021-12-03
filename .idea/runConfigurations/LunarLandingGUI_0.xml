@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="LunarLandingGUI ?" type="Application" factoryName="Application" editBeforeRun="true">
+  <configuration default="false" name="LunarLandingGUI 0" type="Application" factoryName="Application">
     <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
     <option name="MAIN_CLASS_NAME" value="puzzles.lunarlanding.gui.LunarLandingGUI" />
     <module name="BFSPuzzles" />
-    <option name="PROGRAM_PARAMETERS" value="data/lunarlanding/lula-4.txt" />
+    <option name="PROGRAM_PARAMETERS" value="data/lunarlanding/lula-0.txt" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="puzzles.tipover.gui.*" />

@@ -2,10 +2,14 @@ package puzzles.lunarlanding.model;
 
 import solver.Configuration;
 import solver.Solver;
+import util.Coordinates;
 import util.Observer;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The LunarLandingModel represents the game board. It is part of the MVC
@@ -30,11 +34,7 @@ public class LunarLandingModel{
     /**
      * curRow keeps track of the row selected
      */
-    private int curRow;
-    /**
-     * curCol keeps track of the column selected
-     */
-    private int curCol;
+    private Coordinates currentCoords;
     /**
      * The solver that can solve the puzzle using BFS
      */
@@ -43,6 +43,11 @@ public class LunarLandingModel{
      * The name of the last file opened
      */
     private String latestFile;
+
+    /**
+     * The name of the current file being opened
+     */
+    private String currentFile;
 
     /**
      * Constructs a model object by creating a LunarLandingConfig
@@ -56,9 +61,16 @@ public class LunarLandingModel{
      * The reload method reloads the latest file loaded.
      */
     public void reload(){
-        config = new LunarLandingConfig(latestFile);
-        announce("show");
-        announce("loaded");
+        LunarLandingConfig oldConfig = config;
+        try {
+            config = new LunarLandingConfig(currentFile);
+            latestFile = currentFile;
+            announce("show");
+            announce("loaded");
+        }catch (FileNotFoundException e){
+            config = oldConfig;
+            currentFile = latestFile;
+        }
     }
 
     /**
@@ -66,7 +78,7 @@ public class LunarLandingModel{
      * @param fileName: The name of the file being loaded
      */
     public void load(String fileName){
-        latestFile = fileName;
+        currentFile = fileName;
         this.reload();
     }
 
@@ -74,7 +86,7 @@ public class LunarLandingModel{
      * Adds an observer to this model
      * @param o: The viewer of the model
      */
-    public void addObserver(Observer o){
+    public void addObserver(Observer< LunarLandingModel, String > o){
         subjects.add(o);
     }
 
@@ -85,12 +97,13 @@ public class LunarLandingModel{
      */
     public void selection(int row, int col){
         if(config.robotAtLocation(row, col)) { //If there is a robot at the location
-            this.curRow = row;
-            this.curCol = col;
+            this.currentCoords = new Coordinates(row,col);
             this.isChosen = true;
+            announce("selection");
+            announce("space");
         }
         else{
-            announce("No figure at that position\n");
+            announce("No figure at that position");
         }
     }
 
@@ -111,9 +124,9 @@ public class LunarLandingModel{
                 default -> -1;
             };
             if (directionValue != -1) {
-                boolean isValid = config.movePiece(curRow, curCol, directionValue);
+                Coordinates newCoords = config.movePiece(currentCoords, directionValue);
                 isChosen = false;
-                if (isValid) {
+                if (newCoords != null) {
                     announce("show");
                 }
                 else{
@@ -124,7 +137,7 @@ public class LunarLandingModel{
                 announce("Illegal move");
             }
             if(config.isSolution()){
-                announce("I WON!");
+                announce("YOU WON!");
             }
         }
     }
@@ -152,6 +165,34 @@ public class LunarLandingModel{
             }
         }
     }
+
+    /**
+     * Gets the height of the board
+     * @return board height
+     */
+    public int getBoardHeight(){
+        return config.getHeight();
+    }
+
+    /**
+     * Gets the length of the board
+     * @return board length
+     */
+    public int getBoardLength(){
+        return config.getLength();
+    }
+
+    /**
+     * Gets the coordinates of the goal spot
+     * @return goal spot coordinates
+     */
+    public Coordinates getGoal(){ return config.getGoal(); }
+
+    /**
+     * Gets the locations of all the robots
+     * @return a dictionary of robot locations
+     */
+    public Map<Character, Coordinates> getRobotLocations(){ return config.getRobotLocations(); }
 
     /**
      * Calls the toString of the config has the model's toString

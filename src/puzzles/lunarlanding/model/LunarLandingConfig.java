@@ -46,7 +46,7 @@ public class LunarLandingConfig implements Configuration {
      * @param fileName: The name of the file which the information to initialize
      *                the board is located
      */
-    public LunarLandingConfig(String fileName) {
+    public LunarLandingConfig(String fileName) throws FileNotFoundException{
         try(BufferedReader reader = new BufferedReader(new FileReader(fileName))){ //try with resources
             String line = reader.readLine(); //First line set up
             String[] boardArgs = line.split(" ");
@@ -60,6 +60,7 @@ public class LunarLandingConfig implements Configuration {
             }
         }catch(IOException e){
             System.out.println("File could not be opened");
+            throw new FileNotFoundException("sadf");
         }
     }
 
@@ -82,28 +83,23 @@ public class LunarLandingConfig implements Configuration {
     /**
      * This is a public method that allows a LunarLandingConfig to use the private
      * method movePiece without having to use getNeighbors.
-     * @param row: The row that the robot is at
-     * @param col: The column that the robot is at
+     * @param coords: the coordinates that the robot is at
      * @param direction: The direction that the robot is trying to be used in
      * @return: False if it isn't a valid move, true otherwise.
      */
-    public boolean movePiece(int row, int col, int direction){
-        Coordinates coords = new Coordinates(row, col);
-        Character robot = board.get(row, col);
+    public Coordinates movePiece(Coordinates coords, int direction){
+        Character robot = board.get(coords);
         Coordinates directionDelta;
         directionDelta = Direction.values()[direction].coords;
         Coordinates newCoords = movePiece(coords, directionDelta);
         if (newCoords == null){
-            return false;
+            return null;
         }
-        else if(!(newCoords.equals(coords))) {
+        else{
             robotLocations.put(robot, newCoords);
             board.set(blank, coords);
             board.set(robot, newCoords);
-            return true;
-        }
-        else{
-            return false;
+            return newCoords;
         }
     }
 
@@ -116,7 +112,6 @@ public class LunarLandingConfig implements Configuration {
     public boolean robotAtLocation(int row, int col){
         return !board.get(row, col).equals(blank);
     }
-
 
     /**
      * Checks if this configuration is the solution
@@ -245,5 +240,34 @@ public class LunarLandingConfig implements Configuration {
             System.out.println("Something went wrong!");
             return null;
         }
+    }
+
+    /**
+     * Gets the height of the board
+     * @return board height
+     */
+    public int getHeight(){
+        return board.getNRows();
+    }
+    /**
+     * Gets the length of the board
+     * @return board length
+     */
+    public int getLength(){
+        return board.getNCols();
+    }
+    /**
+     * Gets the locations of all the robots
+     * @return a dictionary of robot locations
+     */
+    public Coordinates getGoal(){
+        return goalSpot;
+    }
+    /**
+     * Gets the locations of all the robots
+     * @return a dictionary of robot locations
+     */
+    public Map<Character, Coordinates> getRobotLocations(){
+        return robotLocations;
     }
 }
