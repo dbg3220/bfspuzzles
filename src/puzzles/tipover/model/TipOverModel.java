@@ -17,11 +17,11 @@ import java.util.List;
  */
 public class TipOverModel {
     /** The current Configuration in this model */
-    private TipOverConfig currentConfig;
+    private TipOverConfig currentConfig = null;
     /** A counter variable to keep track of how many steps the user has performed on this attempt */
     private int steps;
     /** The name of the file from where the last successful puzzle load was from */
-    private String lastFilename;
+    private String lastFilename = "";
     /** A list of observers to this model */
     private final List<Observer<TipOverModel, Object>> observers = new LinkedList<>();
 
@@ -48,11 +48,13 @@ public class TipOverModel {
      * @param filename The file of the initial configuration of the puzzle
      */
     public void safeLoad(String filename){
-        try {
-            currentConfig = new TipOverConfig(filename);
-            lastFilename = filename;
-        } catch(IOException exception){
-            exception.printStackTrace();
+        if(!filename.equals("")) {
+            try {
+                currentConfig = new TipOverConfig(filename);
+                lastFilename = filename;
+            } catch (IOException exception) {
+                System.out.println("Unable to find:" + filename);
+            }
         }
     }
 
@@ -61,11 +63,19 @@ public class TipOverModel {
      * there is no solution, then the user is not told and a valid move is chosen at random.
      */
     public void cheat(){
-        Solver solver = new Solver();
-        List<Configuration> path = solver.BFS(currentConfig);
-        if(path.size() > 1) currentConfig = (TipOverConfig) path.get(1);
-        else currentConfig = (TipOverConfig) currentConfig.getNeighbors().get((int) (currentConfig.getNeighbors().size() * Math.random()));
-        steps++;
+        if(currentConfig != null) {
+            Solver solver = new Solver();
+            List<Configuration> path = solver.BFS(currentConfig);
+            if (path.size() > 1) {
+                currentConfig = (TipOverConfig) path.get(1);
+            } else {
+                List<Configuration> neighbors = currentConfig.getNeighbors();
+                if (neighbors.size() != 0) {
+                    currentConfig = (TipOverConfig) neighbors.get((int) (currentConfig.getNeighbors().size() * Math.random()));
+                }
+            }
+            steps++;
+        }
         notifyObservers("");
     }
 
@@ -74,18 +84,21 @@ public class TipOverModel {
      * @param direction The direction given by the user
      */
     public void move(String direction){
-        List<Configuration> neighbors = currentConfig.getNeighbors();
-        Coordinates requestedMove = getCoordinates(direction);
-        for(Configuration neighbor : neighbors){
-            Coordinates neighborTipperLocation = ((TipOverConfig) neighbor).getTipperLocation();
-            if (neighborTipperLocation.equals(requestedMove)) {
-                currentConfig = (TipOverConfig) neighbor;
-                steps++;
-                notifyObservers("");
-                return;
+        if(currentConfig != null) {
+            List<Configuration> neighbors = currentConfig.getNeighbors();
+            Coordinates requestedMove = getCoordinates(direction);
+            for (Configuration neighbor : neighbors) {
+                Coordinates neighborTipperLocation = ((TipOverConfig) neighbor).getTipperLocation();
+                if (neighborTipperLocation.equals(requestedMove)) {
+                    currentConfig = (TipOverConfig) neighbor;
+                    steps++;
+                    notifyObservers("");
+                    return;
+                }
             }
+            notifyObservers(direction);//IF THE DIRECTION WAS INVALID
         }
-        notifyObservers(direction);//IF THE DIRECTION WAS INVALID
+        notifyObservers("");
     }
 
     /**
