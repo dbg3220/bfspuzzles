@@ -156,4 +156,11 @@ public class TipOverModel {
         for(Observer observer : observers)
             observer.update(this, data);
     }
+
+    /**
+     * Small scope method that is used by the UI to call update on itself
+     */
+    public void go(){
+        notifyObservers("");
+    }
 }

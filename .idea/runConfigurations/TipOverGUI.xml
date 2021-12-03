@@ -1,9 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="TipOverGUI ?" type="Application" factoryName="Application" editBeforeRun="true">
+  <configuration default="false" name="TipOverGUI" type="Application" factoryName="Application" activateToolWindowBeforeRun="false">
     <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
     <option name="MAIN_CLASS_NAME" value="puzzles.tipover.gui.TipOverGUI" />
     <module name="BFSPuzzles" />
-    <option name="PROGRAM_PARAMETERS" value="data/tipover/tipover-5.txt" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="puzzles.tipover.gui.*" />
